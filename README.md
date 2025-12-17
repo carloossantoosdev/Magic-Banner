@@ -10,8 +10,6 @@
   **Exiba banners personalizados em qualquer e-commerce**
   
   Plugin de banners dinâmicos que aparecem automaticamente com base na URL e horário de exibição.
-  
-  [Ver Demo](#) • [Documentação](#como-usar) • [Desafio Futuriza](#sobre-o-desafio)
 
 </div>
 

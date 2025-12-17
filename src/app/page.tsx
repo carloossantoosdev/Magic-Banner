@@ -105,7 +105,7 @@ export default function HomePage() {
             <p>
               Desafio Técnico{' '}
               <a
-                href="https://futuriza.com.br"
+                href="https://futuriza.io/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
