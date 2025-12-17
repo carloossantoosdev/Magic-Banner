@@ -26,6 +26,8 @@ interface BannerCardProps {
 export function BannerCard({ banner, onDelete }: BannerCardProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [active, setActive] = useState(banner.active ?? true);
+  const [updating, setUpdating] = useState(false);
 
   const handleDelete = async () => {
     setDeleting(true);
@@ -45,6 +47,33 @@ export function BannerCard({ banner, onDelete }: BannerCardProps) {
       alert('Erro ao deletar banner');
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const handleToggleActive = async (checked: boolean) => {
+    setUpdating(true);
+    try {
+      const response = await fetch(`/api/banners/toggle`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: banner.id,
+          active: checked,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao atualizar status');
+      }
+
+      setActive(checked);
+    } catch (error) {
+      console.error('Erro ao atualizar status:', error);
+      alert('Erro ao atualizar status do banner');
+    } finally {
+      setUpdating(false);
     }
   };
 
@@ -96,8 +125,14 @@ export function BannerCard({ banner, onDelete }: BannerCardProps) {
             {/* Ações */}
             <div className="flex flex-col items-end gap-3">
               <div className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground">Ativo</span>
-                <Switch checked={true} disabled />
+                <span className="text-xs text-muted-foreground">
+                  {active ? 'Ativo' : 'Inativo'}
+                </span>
+                <Switch
+                  checked={active}
+                  onCheckedChange={handleToggleActive}
+                  disabled={updating}
+                />
               </div>
 
               <Button

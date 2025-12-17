@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
       .from('banners')
       .select('*')
       .eq('url', url)
+      .eq('active', true)
       .single();
 
     if (error) {
@@ -104,23 +105,20 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    type BannerInsert = {
-      url: string;
-      image_url: string;
-      image_type: string;
-      start_time: string | null;
-      end_time: string | null;
+    const bannerData = {
+      url,
+      image_url: imageUrl,
+      image_type: imageType,
+      active: true, // Novo banner começa ativo
+      start_time: startTime || null,
+      end_time: endTime || null,
     };
 
     const { data, error } = await supabase
       .from('banners')
-      .insert({
-        url,
-        image_url: imageUrl,
-        image_type: imageType,
-        start_time: startTime || null,
-        end_time: endTime || null,
-      } as BannerInsert)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore - Supabase type inference limitation with dynamic tables
+      .insert(bannerData)
       .select()
       .single();
 

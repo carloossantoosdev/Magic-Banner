@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Sparkles, Code2, Copy, Check } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,8 +12,9 @@ import { BannerList } from '@/components/BannerList';
 export default function AdminPage() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [origin, setOrigin] = useState('https://your-domain.vercel.app');
 
-  const scriptCode = `<script src="${typeof window !== 'undefined' ? window.location.origin : 'https://your-domain.vercel.app'}/magic-banner.js"></script>`;
+  const scriptCode = `<script src="${origin}/magic-banner.js"></script>`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(scriptCode);
@@ -23,6 +25,10 @@ export default function AdminPage() {
   const handleSuccess = () => {
     setRefreshKey((prev) => prev + 1);
   };
+
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">

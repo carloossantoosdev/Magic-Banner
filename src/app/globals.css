@@ -133,4 +133,17 @@
   body {
     @apply bg-background text-foreground;
   }
+  button {
+    cursor: pointer;
+  }
+  a {
+    cursor: pointer;
+  }
+  [role="button"] {
+    cursor: pointer;
+  }
+  input[type="checkbox"],
+  input[type="radio"] {
+    cursor: pointer;
+  }
 }

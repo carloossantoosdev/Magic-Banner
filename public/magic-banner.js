@@ -2,7 +2,7 @@
   'use strict';
 
   // Configuração
-  const API_BASE_URL = window.location.origin;
+  const API_BASE_URL = 'http://localhost:3000';
   const currentUrl = window.location.href;
 
   /**

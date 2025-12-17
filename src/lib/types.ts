@@ -3,6 +3,7 @@ export type Banner = {
   url: string;
   image_url: string;
   image_type: 'upload' | 'url';
+  active: boolean;
   start_time?: string | null;
   end_time?: string | null;
   created_at: string;

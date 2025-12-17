@@ -125,7 +125,12 @@ export function BannerForm({ onSuccess }: BannerFormProps) {
                 type="checkbox"
                 id="useUpload"
                 checked={useUpload}
-                onChange={(e) => setUseUpload(e.target.checked)}
+                onChange={(e) => {
+                  setUseUpload(e.target.checked);
+                  // Limpar valores ao alternar
+                  setImageUrl('');
+                  setImageFile(null);
+                }}
                 className="rounded"
               />
               <label htmlFor="useUpload" className="text-sm cursor-pointer">
@@ -135,6 +140,7 @@ export function BannerForm({ onSuccess }: BannerFormProps) {
 
             {useUpload ? (
               <Input
+                key="file-input"
                 type="file"
                 accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
                 onChange={(e) => setImageFile(e.target.files?.[0] || null)}
@@ -142,6 +148,7 @@ export function BannerForm({ onSuccess }: BannerFormProps) {
               />
             ) : (
               <Input
+                key="url-input"
                 type="url"
                 placeholder="https://exemplo.com/banner.jpg"
                 value={imageUrl}

@@ -59,7 +59,7 @@ cd Magic-Banner
 2. **Instale as dependências:**
 
 ```bash
-npm install
+yarn install
 ```
 
 3. **Configure as variáveis de ambiente:**
