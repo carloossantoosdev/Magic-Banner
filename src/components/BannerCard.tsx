@@ -21,9 +21,10 @@ import { Banner } from '@/lib/types';
 interface BannerCardProps {
   banner: Banner;
   onDelete: () => void;
+  onUpdate: () => void;
 }
 
-export function BannerCard({ banner, onDelete }: BannerCardProps) {
+export function BannerCard({ banner, onDelete, onUpdate }: BannerCardProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [active, setActive] = useState(banner.active ?? true);
@@ -69,6 +70,9 @@ export function BannerCard({ banner, onDelete }: BannerCardProps) {
       }
 
       setActive(checked);
+      
+      // Recarregar a lista completa para refletir mudanças em outros banners
+      onUpdate();
     } catch (error) {
       console.error('Erro ao atualizar status:', error);
       alert('Erro ao atualizar status do banner');

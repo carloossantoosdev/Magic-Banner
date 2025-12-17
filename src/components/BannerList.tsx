@@ -72,6 +72,7 @@ export function BannerList({ refresh }: BannerListProps) {
               key={banner.id}
               banner={banner}
               onDelete={loadBanners}
+              onUpdate={loadBanners}
             />
           ))}
         </div>

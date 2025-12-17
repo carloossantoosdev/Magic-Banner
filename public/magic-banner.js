@@ -46,8 +46,12 @@
     bannerContainer.style.cssText = `
       position: relative;
       width: 100%;
+      max-height: 100vh;
       z-index: 9999;
       overflow: hidden;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
     `;
 
     // Criar imagem do banner
@@ -56,14 +60,58 @@
     bannerImage.alt = 'Banner';
     bannerImage.style.cssText = `
       width: 100%;
+      max-height: 100vh;
       height: auto;
       display: block;
       margin: 0;
       padding: 0;
+      object-fit: contain;
     `;
 
-    // Adicionar imagem ao container
+    // Criar botão de fechar (X)
+    const closeButton = document.createElement('button');
+    closeButton.innerHTML = '&times;';
+    closeButton.setAttribute('aria-label', 'Fechar banner');
+    closeButton.style.cssText = `
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    `;
+
+    closeButton.addEventListener('mouseenter', () => {
+      closeButton.style.background = 'rgba(0, 0, 0, 0.8)';
+    });
+
+    closeButton.addEventListener('mouseleave', () => {
+      closeButton.style.background = 'rgba(0, 0, 0, 0.6)';
+    });
+
+    closeButton.addEventListener('click', () => {
+      bannerContainer.style.opacity = '0';
+      bannerContainer.style.transform = 'translateY(-20px)';
+      setTimeout(() => {
+        bannerContainer.remove();
+        console.log('[Magic Banner] Banner fechado pelo usuário');
+      }, 600);
+    });
+
+    // Adicionar elementos ao container
     bannerContainer.appendChild(bannerImage);
+    bannerContainer.appendChild(closeButton);
 
     // Inserir no topo do body
     if (document.body.firstChild) {
@@ -71,6 +119,12 @@
     } else {
       document.body.appendChild(bannerContainer);
     }
+
+    // Animar entrada após um pequeno delay
+    setTimeout(() => {
+      bannerContainer.style.opacity = '1';
+      bannerContainer.style.transform = 'translateY(0)';
+    }, 100);
 
     // Log de sucesso
     console.log('[Magic Banner] Banner exibido com sucesso:', bannerData.url);

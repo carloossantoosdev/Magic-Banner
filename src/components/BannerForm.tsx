@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { Link2, Image as ImageIcon, Clock, Plus } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Link2, Image as ImageIcon, Clock, Plus, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -20,6 +20,24 @@ export function BannerForm({ onSuccess }: BannerFormProps) {
   const [endTime, setEndTime] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  // Atualizar preview quando imagem mudar
+  useEffect(() => {
+    if (useUpload && imageFile) {
+      // Criar preview a partir do arquivo
+      const objectUrl = URL.createObjectURL(imageFile);
+      setPreviewUrl(objectUrl);
+
+      // Cleanup: liberar memória quando componente desmontar ou arquivo mudar
+      return () => URL.revokeObjectURL(objectUrl);
+    } else if (!useUpload && imageUrl) {
+      // Usar URL diretamente
+      setPreviewUrl(imageUrl);
+    } else {
+      setPreviewUrl(null);
+    }
+  }, [imageFile, imageUrl, useUpload]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -195,6 +213,42 @@ export function BannerForm({ onSuccess }: BannerFormProps) {
               Deixe em branco para exibir o dia todo
             </p>
           </div>
+
+          {/* Preview em Tempo Real */}
+          {previewUrl && (
+            <div className="space-y-2">
+              <Label className="flex items-center gap-2">
+                <Eye className="w-4 h-4 text-cyan-400" />
+                Preview do Banner
+              </Label>
+              <div className="border border-border rounded-lg overflow-hidden bg-gray-900/50 p-4 space-y-3">
+                <div className="relative rounded-md overflow-hidden shadow-lg">
+                  <img
+                    src={previewUrl}
+                    alt="Preview"
+                    className="w-full h-auto"
+                    onError={() => setPreviewUrl(null)}
+                  />
+                </div>
+                <div className="space-y-1 text-xs text-muted-foreground">
+                  {url && (
+                    <div className="flex items-center gap-2">
+                      <Link2 className="w-3 h-3" />
+                      <span className="truncate">{url}</span>
+                    </div>
+                  )}
+                  {(startTime || endTime) && (
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-3 h-3" />
+                      <span>
+                        {startTime || '--:--'} até {endTime || '--:--'}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           {error && (
             <div className="bg-destructive/10 text-destructive px-4 py-3 rounded-lg text-sm">

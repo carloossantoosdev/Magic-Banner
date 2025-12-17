@@ -17,6 +17,33 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
+    // Se estiver ATIVANDO, desativar outros banners da mesma URL primeiro
+    if (active) {
+      // Buscar a URL do banner atual
+      const { data: currentBanner } = await supabase
+        .from('banners')
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        .select('url')
+        .eq('id', id)
+        .single();
+
+      if (currentBanner) {
+        // Desativar outros banners da mesma URL
+        await supabase
+          .from('banners')
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          .update({ active: false })
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          .eq('url', currentBanner.url)
+          .neq('id', id)
+          .eq('active', true);
+      }
+    }
+
+    // Atualizar o banner atual
     const { data, error } = await supabase
       .from('banners')
       // @ts-expect-error: ignore type error due to Supabase generated types

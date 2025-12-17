@@ -13,6 +13,43 @@ export async function OPTIONS() {
 }
 
 /**
+ * Verifica se o banner está dentro do horário configurado
+ */
+function isWithinTimeRange(banner: Record<string, unknown>): boolean {
+  // Se não tem horário configurado, está sempre disponível
+  if (!banner.start_time || !banner.end_time) {
+    return true;
+  }
+
+  // Obter hora atual no formato HH:MM
+  const now = new Date();
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
+  
+  // Normalizar horários para formato HH:MM (remover segundos se houver)
+  const normalizeTime = (time: string): string => {
+    const parts = time.split(':');
+    return `${parts[0].padStart(2, '0')}:${parts[1].padStart(2, '0')}`;
+  };
+
+  const currentTime = `${String(currentHour).padStart(2, '0')}:${String(currentMinute).padStart(2, '0')}`;
+  const startTime = normalizeTime(String(banner.start_time));
+  const endTime = normalizeTime(String(banner.end_time));
+
+  // Verificar se está dentro do horário
+  const isWithinTime = currentTime >= startTime && currentTime <= endTime;
+
+  console.log(`[Banner ${banner.id}] Verificação de horário:`, {
+    currentTime,
+    startTime,
+    endTime,
+    isWithinTime
+  });
+
+  return isWithinTime;
+}
+
+/**
  * GET /api/banners?url=<URL_ENCODED>
  * Busca banner por URL exata
  */
@@ -41,6 +78,12 @@ export async function GET(request: NextRequest) {
         return NextResponse.json(null, { headers: corsHeaders });
       }
       throw error;
+    }
+
+    // Verificar se está dentro do horário configurado
+    if (!isWithinTimeRange(data)) {
+      // Banner fora do horário, não exibir
+      return NextResponse.json(null, { headers: corsHeaders });
     }
 
     return NextResponse.json(data, { headers: corsHeaders });
@@ -105,6 +148,21 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Desativar outros banners da mesma URL antes de criar um novo ativo
+    // Isso garante que apenas 1 banner por URL esteja ativo por vez
+    const { error: deactivateError } = await supabase
+      .from('banners')
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      .update({ active: false })
+      .eq('url', url)
+      .eq('active', true);
+
+    if (deactivateError) {
+      console.error('Erro ao desativar banners existentes:', deactivateError);
+      // Não bloqueia a criação, apenas loga o erro
+    }
+
     const bannerData = {
       url,
       image_url: imageUrl,
@@ -117,7 +175,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase
       .from('banners')
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore - Supabase type inference limitation with dynamic tables
+      // @ts-ignore - Supabase type inference limitation
       .insert(bannerData)
       .select()
       .single();
@@ -126,13 +184,6 @@ export async function POST(request: NextRequest) {
       // Se der erro, deletar a imagem que foi feita upload
       if (imageType === 'upload') {
         await deleteBannerImage(imageUrl);
-      }
-      
-      if (error.code === '23505') {
-        return NextResponse.json(
-          { error: 'Já existe um banner para esta URL' },
-          { status: 409, headers: corsHeaders }
-        );
       }
       throw error;
     }
