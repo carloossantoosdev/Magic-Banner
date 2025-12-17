@@ -1,13 +1,31 @@
 (function () {
   'use strict';
 
-  // Detecta automaticamente se está em desenvolvimento (localhost) ou produção
-  const API_BASE_URL = 
-    window.location.hostname === 'localhost' || 
-    window.location.hostname === '127.0.0.1'
-      ? 'http://localhost:3000'
-      : window.location.origin;
+  // Detecta automaticamente a URL base da API
+  // Usa a origem do script (de onde foi carregado) ao invés da página atual
+  function getApiBaseUrl() {
+    const scriptSrc = document.currentScript?.src || '';
+    
+    // Se o script foi carregado de localhost, usa localhost
+    if (scriptSrc.includes('localhost:') || scriptSrc.includes('127.0.0.1:')) {
+      return 'http://localhost:3000';
+    }
+    
+    // Se o script tem uma URL, extrai a origem dele
+    if (scriptSrc) {
+      try {
+        const url = new URL(scriptSrc);
+        return url.origin;
+      } catch (e) {
+        console.warn('[Magic Banner] Não foi possível determinar origem do script:', e);
+      }
+    }
+    
+    // Fallback: usa a origem da página atual
+    return window.location.origin;
+  }
   
+  const API_BASE_URL = getApiBaseUrl();
   const currentUrl = window.location.href;
 
   function isWithinTimeRange(startTime, endTime) {
