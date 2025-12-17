@@ -56,7 +56,8 @@ O **Magic Banner Plugin** é uma aplicação Next.js full stack desenvolvida com
 #### 🎯 **Script Embutível**
 - ✅ **Vanilla JavaScript** - Sem dependências externas
 - ✅ **CORS Habilitado** - Funciona em qualquer domínio
-- ✅ **Detecção Automática** - Captura URL e busca banner correspondente
+- ✅ **Detecção Automática de Ambiente** - Usa `localhost:3000` em dev, URL da Vercel em produção
+- ✅ **Detecção de URL** - Captura URL e busca banner correspondente
 - ✅ **Efeitos Visuais** - Animações suaves de entrada/saída
 - ✅ **Botão de Fechar** - Usuário pode fechar o banner
 - ✅ **Responsivo** - Adapta-se a qualquer tamanho de tela
@@ -479,6 +480,28 @@ Deleta banner por ID.
 3. Crie um banner para a URL: `http://localhost:3000/test`
 4. Acesse `http://localhost:3000/test` (404 normal)
 5. ✅ Banner deve aparecer no topo mesmo na página 404!
+
+### 🔄 Detecção Automática de Ambiente
+
+O script `magic-banner.js` **detecta automaticamente** se está rodando em desenvolvimento ou produção:
+
+```javascript
+// O script verifica o hostname da página
+const API_BASE_URL = 
+  window.location.hostname === 'localhost' || 
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3000'  // ← DESENVOLVIMENTO
+    : window.location.origin;  // ← PRODUÇÃO
+```
+
+**Isso significa que você pode:**
+- ✅ Testar localmente sem alterar código
+- ✅ Fazer deploy sem alterar código
+- ✅ Mesmo script funciona em qualquer ambiente
+
+**Para mais detalhes sobre testes, veja:** [`TESTES.md`](./TESTES.md)
+
+---
 
 ### Teste 2: Script em HTML Externo
 

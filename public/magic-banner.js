@@ -1,7 +1,13 @@
 (function () {
   'use strict';
 
-  const API_BASE_URL = window.location.origin;
+  // Detecta automaticamente se está em desenvolvimento (localhost) ou produção
+  const API_BASE_URL = 
+    window.location.hostname === 'localhost' || 
+    window.location.hostname === '127.0.0.1'
+      ? 'http://localhost:3000'
+      : window.location.origin;
+  
   const currentUrl = window.location.href;
 
   function isWithinTimeRange(startTime, endTime) {
