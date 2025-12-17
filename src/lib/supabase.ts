@@ -4,7 +4,22 @@ import { Database } from './types';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
+// Client para API routes (server-side)
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
+
+/**
+ * Cria um client Supabase para uso em componentes client-side
+ * com suporte a autenticação
+ */
+export function createBrowserSupabaseClient() {
+  return createClient<Database>(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true,
+    },
+  });
+}
 
 /**
  * Upload de imagem para o Supabase Storage
