@@ -365,6 +365,93 @@ Deleta banner por ID.
 
 ---
 
+## 🔬 Testando em Qualquer Site (Via Console)
+
+Você pode testar o Magic Banner em **qualquer site** usando o Console do navegador, **sem precisar editar o código HTML**. Perfeito para demonstrações!
+
+### Passo a Passo:
+
+#### 1. **Abra qualquer site**
+```
+Exemplo: https://www.google.com, https://www.github.com, etc.
+```
+
+#### 2. **Abra o Console do navegador**
+- **Windows/Linux:** Pressione `F12` ou `Ctrl + Shift + J`
+- **Mac:** Pressione `Cmd + Option + J`
+- Ou clique com botão direito → "Inspecionar" → Aba "Console"
+
+#### 3. **Permitir colar código (apenas primeira vez)**
+
+O navegador pode mostrar um aviso de segurança. Digite exatamente:
+```
+allow pasting
+```
+Pressione `Enter`. Isso é necessário apenas uma vez por sessão.
+
+#### 4. **Cole o código de teste**
+
+Copie e cole este código no Console:
+
+```javascript
+const script = document.createElement('script');
+script.src = 'https://magic-banner-pi.vercel.app/magic-banner.js';
+document.body.appendChild(script);
+console.log('✅ Script injetado!');
+```
+
+**⚠️ Importante:** Substitua `magic-banner-pi.vercel.app` pela **sua URL** da Vercel!
+
+#### 5. **Pressione Enter**
+
+Você verá no Console:
+```
+✅ Script injetado!
+[Magic Banner] Fazendo requisição para: https://magic-banner-pi.vercel.app/api/banners?url=...
+```
+
+#### 6. **Criar banner para o site de teste**
+
+1. Copie a **URL completa** do site que você abriu
+2. Vá no **painel admin** (`https://seu-projeto.vercel.app/admin`)
+3. Crie um banner com essa URL exata
+4. **Recarregue** a página de teste
+
+✅ **O banner deve aparecer no topo do site!**
+
+### 🎯 Resultado Esperado:
+
+**Console mostrará:**
+```
+✅ Script injetado!
+[Magic Banner] Fazendo requisição para: https://magic-banner-pi.vercel.app/api/banners?url=https://exemplo.com/
+[Magic Banner] Banner encontrado: {...}
+[Magic Banner] Banner exibido com sucesso
+```
+
+**Visualmente:**
+- Banner aparece no topo da página com animação suave
+- Botão "X" no canto superior direito para fechar
+- Banner cobre a largura total da tela
+
+### ⚠️ Observações:
+
+- **Temporário:** O banner desaparece ao recarregar a página (é apenas para teste)
+- **URL exata:** A URL do banner deve ser **exatamente** igual à URL da página
+- **CORS:** O script funciona em qualquer site por causa dos headers CORS habilitados
+
+### 💡 Alternativa: Bookmarklet
+
+Para testar de forma mais rápida, crie um **favorito/bookmark** com este código na URL:
+
+```javascript
+javascript:(function(){var s=document.createElement('script');s.src='https://magic-banner-pi.vercel.app/magic-banner.js';document.body.appendChild(s);})();
+```
+
+Depois é só **clicar no favorito** em qualquer site para carregar o script instantaneamente!
+
+---
+
 ## 🎯 Sobre o Desafio
 
 Este projeto foi desenvolvido como parte do **Desafio Técnico da Futuriza**, uma empresa de tecnologia focada em acelerar o futuro do varejo com IA, automação e soluções inteligentes.
