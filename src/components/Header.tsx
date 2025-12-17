@@ -16,30 +16,25 @@ export function Header() {
   useEffect(() => {
     const supabase = createBrowserSupabaseClient();
     
-    // Verificar se há usuário logado
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       setLoading(false);
 
-      // Salvar tokens nos cookies se houver sessão
       if (session) {
         document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
         document.cookie = `sb-refresh-token=${session.refresh_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
       }
     });
 
-    // Escutar mudanças de autenticação
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
 
-      // Atualizar cookies quando sessão mudar
       if (session) {
         document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
         document.cookie = `sb-refresh-token=${session.refresh_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
       } else {
-        // Limpar cookies ao fazer logout
         document.cookie = 'sb-access-token=; path=/; max-age=0';
         document.cookie = 'sb-refresh-token=; path=/; max-age=0';
       }

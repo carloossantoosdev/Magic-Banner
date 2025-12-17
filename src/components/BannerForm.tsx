@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -22,17 +23,13 @@ export function BannerForm({ onSuccess }: BannerFormProps) {
   const [error, setError] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  // Atualizar preview quando imagem mudar
   useEffect(() => {
     if (useUpload && imageFile) {
-      // Criar preview a partir do arquivo
       const objectUrl = URL.createObjectURL(imageFile);
       setPreviewUrl(objectUrl);
 
-      // Cleanup: liberar memória quando componente desmontar ou arquivo mudar
       return () => URL.revokeObjectURL(objectUrl);
     } else if (!useUpload && imageUrl) {
-      // Usar URL diretamente
       setPreviewUrl(imageUrl);
     } else {
       setPreviewUrl(null);
@@ -43,7 +40,6 @@ export function BannerForm({ onSuccess }: BannerFormProps) {
     e.preventDefault();
     setError('');
 
-    // Validação
     if (!url.startsWith('https://') && !url.startsWith('http://')) {
       setError('URL deve começar com https:// ou http://');
       return;
@@ -86,7 +82,6 @@ export function BannerForm({ onSuccess }: BannerFormProps) {
         throw new Error(data.error || 'Erro ao criar banner');
       }
 
-      // Limpar formulário
       setUrl('');
       setImageUrl('');
       setImageFile(null);
@@ -112,7 +107,6 @@ export function BannerForm({ onSuccess }: BannerFormProps) {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* URL de Destino */}
           <div className="space-y-2">
             <Label htmlFor="url" className="flex items-center gap-2">
               <Link2 className="w-4 h-4" />
@@ -131,7 +125,6 @@ export function BannerForm({ onSuccess }: BannerFormProps) {
             </p>
           </div>
 
-          {/* URL da Imagem ou Upload */}
           <div className="space-y-2">
             <Label className="flex items-center gap-2">
               <ImageIcon className="w-4 h-4" />
@@ -145,7 +138,6 @@ export function BannerForm({ onSuccess }: BannerFormProps) {
                 checked={useUpload}
                 onChange={(e) => {
                   setUseUpload(e.target.checked);
-                  // Limpar valores ao alternar
                   setImageUrl('');
                   setImageFile(null);
                 }}
@@ -176,7 +168,6 @@ export function BannerForm({ onSuccess }: BannerFormProps) {
             )}
           </div>
 
-          {/* Horário de Exibição */}
           <div className="space-y-3">
             <Label className="flex items-center gap-2">
               <Clock className="w-4 h-4" />
@@ -214,7 +205,6 @@ export function BannerForm({ onSuccess }: BannerFormProps) {
             </p>
           </div>
 
-          {/* Preview em Tempo Real */}
           {previewUrl && (
             <div className="space-y-2">
               <Label className="flex items-center gap-2">

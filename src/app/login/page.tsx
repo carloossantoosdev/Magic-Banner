@@ -26,7 +26,6 @@ export default function LoginPage() {
       const supabase = createBrowserSupabaseClient();
 
       if (isSignUp) {
-        // Criar nova conta
         const { error: signUpError } = await supabase.auth.signUp({
           email,
           password,
@@ -39,7 +38,6 @@ export default function LoginPage() {
           throw signUpError;
         }
 
-        // Após criar conta, fazer login automaticamente
         const { data, error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -49,7 +47,6 @@ export default function LoginPage() {
           throw signInError;
         }
 
-        // Salvar tokens nos cookies
         if (data.session) {
           document.cookie = `sb-access-token=${data.session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
           document.cookie = `sb-refresh-token=${data.session.refresh_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
@@ -58,7 +55,6 @@ export default function LoginPage() {
         router.push('/admin');
         router.refresh();
       } else {
-        // Fazer login
         const { data, error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -68,7 +64,6 @@ export default function LoginPage() {
           throw signInError;
         }
 
-        // Salvar tokens nos cookies
         if (data.session) {
           document.cookie = `sb-access-token=${data.session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
           document.cookie = `sb-refresh-token=${data.session.refresh_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;

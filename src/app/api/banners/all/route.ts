@@ -1,11 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-/**
- * GET /api/banners/all
- * Lista todos os banners ordenados por data de criação
- * Retorna o estado real do banco - usuário controla manualmente
- */
 export async function GET() {
   try {
     const { data, error } = await supabase

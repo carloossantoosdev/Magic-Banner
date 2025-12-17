@@ -96,14 +96,11 @@ export default function AdminPage() {
           </CardContent>
         </Card>
 
-        {/* Layout em 2 Colunas */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Coluna Esquerda - Formulário (40%) */}
           <div className="lg:col-span-2">
             <BannerForm onSuccess={handleSuccess} />
           </div>
 
-          {/* Coluna Direita - Lista (60%) */}
           <div className="lg:col-span-3">
             <BannerList refresh={refreshKey} />
           </div>

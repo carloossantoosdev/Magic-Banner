@@ -71,7 +71,6 @@ export function BannerCard({ banner, onDelete, onUpdate }: BannerCardProps) {
 
       setActive(checked);
       
-      // Recarregar a lista completa para refletir mudanças em outros banners
       onUpdate();
     } catch (error) {
       console.error('Erro ao atualizar status:', error);
@@ -86,7 +85,6 @@ export function BannerCard({ banner, onDelete, onUpdate }: BannerCardProps) {
       <Card className="hover:border-primary/50 transition-colors">
         <CardContent className="p-4">
           <div className="flex gap-4">
-            {/* Thumbnail */}
             <div className="shrink-0 w-32 h-20 bg-muted rounded overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -96,7 +94,6 @@ export function BannerCard({ banner, onDelete, onUpdate }: BannerCardProps) {
               />
             </div>
 
-            {/* Conteúdo */}
             <div className="flex-1 min-w-0">
               <a
                 href={banner.url}
@@ -126,7 +123,6 @@ export function BannerCard({ banner, onDelete, onUpdate }: BannerCardProps) {
               </p>
             </div>
 
-            {/* Ações */}
             <div className="flex flex-col items-end gap-3">
               <div className="flex items-center gap-2">
                 <span className="text-xs text-muted-foreground">
@@ -152,7 +148,6 @@ export function BannerCard({ banner, onDelete, onUpdate }: BannerCardProps) {
         </CardContent>
       </Card>
 
-      {/* Dialog de Confirmação */}
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent>
           <DialogHeader>

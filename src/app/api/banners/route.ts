@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase, uploadBannerImage, deleteBannerImage } from '@/lib/supabase';
 
-// Habilitar CORS para permitir requisições de qualquer origem
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
@@ -16,17 +15,14 @@ export async function OPTIONS() {
  * Verifica se o banner está dentro do horário configurado
  */
 function isWithinTimeRange(banner: Record<string, unknown>): boolean {
-  // Se não tem horário configurado, está sempre disponível
   if (!banner.start_time || !banner.end_time) {
     return true;
   }
 
-  // Obter hora atual no formato HH:MM
   const now = new Date();
   const currentHour = now.getHours();
   const currentMinute = now.getMinutes();
   
-  // Normalizar horários para formato HH:MM (remover segundos se houver)
   const normalizeTime = (time: string): string => {
     const parts = time.split(':');
     return `${parts[0].padStart(2, '0')}:${parts[1].padStart(2, '0')}`;
@@ -36,15 +32,7 @@ function isWithinTimeRange(banner: Record<string, unknown>): boolean {
   const startTime = normalizeTime(String(banner.start_time));
   const endTime = normalizeTime(String(banner.end_time));
 
-  // Verificar se está dentro do horário
   const isWithinTime = currentTime >= startTime && currentTime <= endTime;
-
-  console.log(`[Banner ${banner.id}] Verificação de horário:`, {
-    currentTime,
-    startTime,
-    endTime,
-    isWithinTime
-  });
 
   return isWithinTime;
 }
@@ -74,15 +62,12 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       if (error.code === 'PGRST116') {
-        // Nenhum banner encontrado
         return NextResponse.json(null, { headers: corsHeaders });
       }
       throw error;
     }
 
-    // Verificar se está dentro do horário configurado
     if (!isWithinTimeRange(data)) {
-      // Banner fora do horário, não exibir
       return NextResponse.json(null, { headers: corsHeaders });
     }
 
@@ -126,7 +111,6 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      // Validar tipo de arquivo
       const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
       if (!validTypes.includes(imageFile.type)) {
         return NextResponse.json(
@@ -135,7 +119,6 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      // Gerar ID temporário para o upload
       const tempId = crypto.randomUUID();
       imageUrl = await uploadBannerImage(imageFile, tempId);
     } else {
@@ -148,8 +131,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Desativar outros banners da mesma URL antes de criar um novo ativo
-    // Isso garante que apenas 1 banner por URL esteja ativo por vez
     const { error: deactivateError } = await supabase
       .from('banners')
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -160,14 +141,13 @@ export async function POST(request: NextRequest) {
 
     if (deactivateError) {
       console.error('Erro ao desativar banners existentes:', deactivateError);
-      // Não bloqueia a criação, apenas loga o erro
     }
 
     const bannerData = {
       url,
       image_url: imageUrl,
       image_type: imageType,
-      active: true, // Novo banner começa ativo
+      active: true,
       start_time: startTime || null,
       end_time: endTime || null,
     };
@@ -181,7 +161,6 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      // Se der erro, deletar a imagem que foi feita upload
       if (imageType === 'upload') {
         await deleteBannerImage(imageUrl);
       }
@@ -214,7 +193,6 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    // Buscar banner para pegar a URL da imagem antes de deletar
     const { data: banner, error: fetchError } = await supabase
       .from('banners')
       .select('*')
@@ -225,7 +203,6 @@ export async function DELETE(request: NextRequest) {
       throw fetchError;
     }
 
-    // Deletar banner do banco
     const { error: deleteError } = await supabase
       .from('banners')
       .delete()
@@ -235,7 +212,6 @@ export async function DELETE(request: NextRequest) {
       throw deleteError;
     }
 
-    // Se era upload, deletar a imagem do storage
     type BannerData = {
       image_type: string;
       image_url: string;
