@@ -54,7 +54,8 @@ export function BannerCard({ banner, onDelete }: BannerCardProps) {
         <CardContent className="p-4">
           <div className="flex gap-4">
             {/* Thumbnail */}
-            <div className="flex-shrink-0 w-32 h-20 bg-muted rounded overflow-hidden">
+            <div className="shrink-0 w-32 h-20 bg-muted rounded overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={banner.image_url}
                 alt="Banner"
@@ -71,7 +72,7 @@ export function BannerCard({ banner, onDelete }: BannerCardProps) {
                 className="text-sm font-medium hover:text-primary flex items-center gap-1 truncate group"
               >
                 <span className="truncate">{banner.url}</span>
-                <ExternalLink className="w-3 h-3 flex-shrink-0 opacity-0 group-hover:opacity-100 transition" />
+                <ExternalLink className="w-3 h-3 shrink-0 opacity-0 group-hover:opacity-100 transition" />
               </a>
 
               {banner.start_time && banner.end_time && (

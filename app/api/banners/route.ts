@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase, uploadBannerImage, deleteBannerImage } from '@/lib/supabase';
-import { Banner } from '@/lib/types';
 
 // Habilitar CORS para permitir requisições de qualquer origem
 const corsHeaders = {
@@ -105,6 +104,14 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    type BannerInsert = {
+      url: string;
+      image_url: string;
+      image_type: string;
+      start_time: string | null;
+      end_time: string | null;
+    };
+
     const { data, error } = await supabase
       .from('banners')
       .insert({
@@ -113,7 +120,7 @@ export async function POST(request: NextRequest) {
         image_type: imageType,
         start_time: startTime || null,
         end_time: endTime || null,
-      })
+      } as BannerInsert)
       .select()
       .single();
 
@@ -180,8 +187,13 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Se era upload, deletar a imagem do storage
-    if (banner.image_type === 'upload') {
-      await deleteBannerImage(banner.image_url);
+    type BannerData = {
+      image_type: string;
+      image_url: string;
+    };
+    
+    if (banner && (banner as BannerData).image_type === 'upload') {
+      await deleteBannerImage((banner as BannerData).image_url);
     }
 
     return NextResponse.json(
