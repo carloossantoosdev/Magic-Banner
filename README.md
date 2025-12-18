@@ -532,6 +532,24 @@ Depois é só **clicar no favorito** em qualquer site para carregar o script ins
 
 ---
 
+
+---
+
+## 🎬 Demonstração Completa do Funcionamento
+
+Este vídeo mostra o fluxo completo do Magic Banner Plugin:
+- criação do banner no painel admin
+- geração do script
+- injeção do script em um site externo
+- exibição dinâmica do banner por URL
+
+<video src="./magic-banner-preview.mp4" controls width="800">
+  Seu navegador não suporta a reprodução de vídeo.
+</video>
+
+---
+
+
 ## 🎯 Sobre o Desafio
 
 Este projeto foi desenvolvido como parte do **Desafio Técnico da Futuriza**, uma empresa de tecnologia focada em acelerar o futuro do varejo com IA, automação e soluções inteligentes.
