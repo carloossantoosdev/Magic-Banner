@@ -159,31 +159,29 @@ Copie o script gerado no painel admin e adicione no HTML da sua página:
 
 ### 4. 🔄 Detecção Automática de Ambiente
 
-O script `magic-banner.js` **detecta automaticamente** se está rodando em **desenvolvimento** ou **produção**:
+O script `magic-banner.js` **detecta automaticamente** de onde ele foi carregado usando `document.currentScript.src`:
 
 ```javascript
-// Detecção automática do ambiente
-const API_BASE_URL = 
-  window.location.hostname === 'localhost' || 
-  window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:3000'  // ← DESENVOLVIMENTO
-    : window.location.origin;  // ← PRODUÇÃO
+// Detecta a origem do próprio script (não da página)
+const scriptUrl = new URL(document.currentScript.src);
+const API_BASE_URL = scriptUrl.origin;
 ```
 
-**Isso significa que:**
-- ✅ **Em localhost:** O script usa `http://localhost:3000` para buscar a API
-- ✅ **Em produção:** O script usa automaticamente a URL da Vercel
-- ✅ **Mesmo código funciona em qualquer ambiente** - não precisa alterar nada!
+**Por que isso é importante?**
+- ✅ O script sempre usa a **mesma origem de onde foi carregado** para chamar a API
+- ✅ Se você carregar de `http://localhost:3000`, ele chama `http://localhost:3000/api/banners`
+- ✅ Se você carregar de `https://seu-projeto.vercel.app`, ele chama `https://seu-projeto.vercel.app/api/banners`
+- ✅ **Funciona perfeitamente em qualquer domínio** - não precisa alterar nada!
 
 **Testando localmente:**
 ```html
-<!-- Funciona em localhost -->
+<!-- Script carregado do localhost → API também será localhost -->
 <script src="http://localhost:3000/magic-banner.js"></script>
 ```
 
 **Em produção:**
 ```html
-<!-- Funciona na Vercel -->
+<!-- Script carregado da Vercel → API também será da Vercel -->
 <script src="https://seu-projeto.vercel.app/magic-banner.js"></script>
 ```
 
@@ -340,28 +338,110 @@ Deleta banner por ID.
 
 ---
 
-## 🧪 Testando Localmente
+## 🧪 Como Testar a Aplicação
 
-### Teste o Script
+### ✅ Teste 1: Local (Desenvolvimento)
 
-1. Crie um arquivo `teste.html`:
+**1. Inicie o servidor:**
+```bash
+cd MagicBanner
+yarn dev
+```
+
+**2. Acesse o painel admin:**
+```
+http://localhost:3000/admin
+```
+
+**3. Crie um banner de teste:**
+- **URL:** `http://127.0.0.1:5500/index.html` (ou qualquer URL que você vai testar)
+- **Imagem:** Cole uma URL de imagem ou faça upload
+- Clique em **Criar Banner**
+
+**4. Crie um arquivo HTML de teste** (em outra pasta):
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <title>Teste Magic Banner</title>
+</head>
+<body>
+    <h1>🧪 Teste do Banner</h1>
+    <p>URL atual: <span id="url"></span></p>
+    
+    <!-- Script do Magic Banner (LOCAL) -->
+    <script src="http://localhost:3000/magic-banner.js"></script>
+    
+    <script>
+        document.getElementById('url').textContent = window.location.href;
+    </script>
+</body>
+</html>
+```
+
+**5. Abra o arquivo HTML:**
+- Use **Live Server** no VS Code (porta 5500)
+- Ou abra diretamente no navegador
+- **Copie a URL exata** que aparece na barra de endereço
+- **Use essa URL exata** ao criar o banner no passo 3
+
+**6. Verifique no Console:**
+```
+[Magic Banner] Aguardando script magic-banner.js...
+[Magic Banner] Banner exibido com sucesso
+```
+
+✅ **O banner deve aparecer no topo da página!**
+
+---
+
+### ✅ Teste 2: Produção (Vercel)
+
+> ⚠️ **IMPORTANTE:** Antes de testar em produção, certifique-se de que:
+> 1. Você fez **commit** de todas as alterações
+> 2. Fez **push** para o GitHub
+> 3. A Vercel fez o **deploy automático** (ou você fez redeploy manual)
+> 4. As **variáveis de ambiente** estão configuradas na Vercel
+
+**1. Acesse o painel admin em produção:**
+```
+https://seu-projeto.vercel.app/admin
+```
+
+**2. Crie um banner para qualquer URL:**
+- **Exemplo:** `http://127.0.0.1:5500/index.html`
+- Ou qualquer site público: `https://exemplo.com`
+
+**3. Use o script de produção:**
 
 ```html
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Teste Magic Banner</title>
+    <title>Teste Produção</title>
 </head>
 <body>
-    <h1>Teste do Banner</h1>
-    <script src="http://localhost:3000/magic-banner.js"></script>
+    <h1>Teste do Banner em Produção</h1>
+    
+    <!-- Script do Magic Banner (PRODUÇÃO) -->
+    <script src="https://magic-banner-pi.vercel.app/magic-banner.js"></script>
 </body>
 </html>
 ```
 
-2. Crie um banner no painel para a URL `file:///caminho/para/teste.html`
-3. Abra o arquivo no navegador
-4. O banner deve aparecer no topo!
+**4. Ou teste via Console (SEM editar HTML):**
+
+Abra qualquer site e cole no Console:
+
+```javascript
+const script = document.createElement('script');
+script.src = 'https://magic-banner-pi.vercel.app/magic-banner.jss';
+document.body.appendChild(script);
+console.log('✅ Script injetado!');
+```
+
+> **Dica:** Crie um banner com a URL exata do site que você está testando!
 
 ---
 
