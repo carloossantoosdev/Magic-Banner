@@ -543,9 +543,11 @@ Este vídeo mostra o fluxo completo do Magic Banner Plugin:
 - injeção do script em um site externo
 - exibição dinâmica do banner por URL
 
-<video src="./magic-banner-preview.mp4" controls width="800">
-  Seu navegador não suporta a reprodução de vídeo.
-</video>
+🎬 [Assistir vídeo em tela cheia](https://magic-banner-pi.vercel.app/magic-banner-preview.mp4)
+
+<video src="https://magic-banner-pi.vercel.app/magic-banner-preview.mp4" controls width="800"></video>
+
+
 
 ---
 
