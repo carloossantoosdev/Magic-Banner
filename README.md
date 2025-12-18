@@ -436,7 +436,7 @@ Abra qualquer site e cole no Console:
 
 ```javascript
 const script = document.createElement('script');
-script.src = 'https://magic-banner-pi.vercel.app/magic-banner.jss';
+script.src = 'https://magic-banner-pi.vercel.app/magic-banner.js';
 document.body.appendChild(script);
 console.log('✅ Script injetado!');
 ```
