@@ -1,17 +1,13 @@
 (function () {
   'use strict';
 
-  // Detecta automaticamente a URL base da API
-  // Usa a origem do script (de onde foi carregado) ao invés da página atual
   function getApiBaseUrl() {
     const scriptSrc = document.currentScript?.src || '';
     
-    // Se o script foi carregado de localhost, usa localhost
     if (scriptSrc.includes('localhost:') || scriptSrc.includes('127.0.0.1:')) {
       return 'http://localhost:3000';
     }
     
-    // Se o script tem uma URL, extrai a origem dele
     if (scriptSrc) {
       try {
         const url = new URL(scriptSrc);
@@ -21,7 +17,6 @@
       }
     }
     
-    // Fallback: usa a origem da página atual
     return window.location.origin;
   }
   
@@ -30,7 +25,7 @@
 
   function isWithinTimeRange(startTime, endTime) {
     if (!startTime || !endTime) {
-      return true; // Sem restrição de horário
+      return true;
     }
 
     const now = new Date();
