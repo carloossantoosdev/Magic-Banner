@@ -53,18 +53,25 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // IMPORTANTE:
+    // `.single()` estoura PGRST116 quando não existe registro OU quando existe mais de 1.
+    // Em produção é comum acontecer (ex: concorrência ao ativar/desativar). Aqui escolhemos
+    // de forma determinística o banner ativo mais recente.
     const { data, error } = await supabase
       .from('banners')
       .select('*')
       .eq('url', url)
       .eq('active', true)
-      .single();
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
     if (error) {
-      if (error.code === 'PGRST116') {
-        return NextResponse.json(null, { headers: corsHeaders });
-      }
       throw error;
+    }
+
+    if (!data) {
+      return NextResponse.json(null, { headers: corsHeaders });
     }
 
     if (!isWithinTimeRange(data)) {
